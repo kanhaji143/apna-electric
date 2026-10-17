@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin CRM — Apna Electric One</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#10b981">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Apna Electric">
+</head>
+<body>
+
+<nav class="nav">
+    <div class="nav-inner">
+        <a class="brand" href="index.html">
+            <i class="fas fa-bolt"></i>
+            <div>Apna Electric One<small>Admin CRM</small></div>
+        </a>
+        <div class="nav-links">
+            <a href="shop.html"><i class="fas fa-cart-shopping"></i> Shop EV</a>
+            <a href="index.html">Book Ride</a>
+            <a href="driver.html">Driver</a>
+            <a href="admin.html" class="active">Admin</a>
+            <a href="settings.html">Settings</a>
+            <a href="#" onclick="Adm.reset(); return false;"><i class="fas fa-rotate-left"></i> Reset</a>
+        </div>
+    </div>
+</nav>
+
+<main class="wrap" style="padding-top:26px;padding-bottom:50px">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px">
+        <div class="section-title" style="margin-bottom:0">Dashboard</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-sm" onclick="Adm.testLowStock()" style="background:#25D366;color:#fff"><i class="fab fa-whatsapp"></i> Low Stock Alert</button>
+            <button class="btn btn-sm" onclick="Adm.testPending()" style="background:#25D366;color:#fff"><i class="fab fa-whatsapp"></i> Pending Orders</button>
+        </div>
+    </div>
+    <div class="stats-grid" id="statsGrid" style="margin-bottom:24px"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" id="twoCol">
+        <div class="card">
+            <div class="card-head"><h3><i class="fas fa-chart-simple" style="color:var(--brand)"></i> Rides by Status</h3></div>
+            <div class="card-body" id="statusChart"></div>
+        </div>
+        <div class="card">
+            <div class="card-head"><h3><i class="fas fa-wallet" style="color:var(--brand)"></i> Revenue</h3></div>
+            <div class="card-body" id="revBox"></div>
+        </div>
+    </div>
+
+    <!-- RIDES -->
+    <div class="section-title" style="margin-top:32px">All Rides</div>
+    <div class="card">
+        <div class="card-head">
+            <h3>Bookings</h3>
+            <select class="form-control" style="width:auto" id="rideFilter" onchange="Adm.render()">
+                <option value="">All Status</option>
+                <option value="requested">Searching</option>
+                <option value="accepted">Assigned</option>
+                <option value="ongoing">On Trip</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Ride ID</th><th>Customer</th><th>Route</th><th>Vehicle</th><th>Driver</th><th>Fare</th><th>Payment</th><th>Status</th></tr></thead>
+                <tbody id="ridesBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- SHOP ORDERS -->
+    <div class="section-title" style="margin-top:32px">Shop Orders (EV Sales)</div>
+    <div class="card">
+        <div class="card-head">
+            <h3>Sales &amp; Test Rides</h3>
+            <select class="form-control" style="width:auto" id="orderFilter" onchange="Adm.render()">
+                <option value="">All Status</option>
+                <option value="placed">Placed</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Order</th><th>Customer</th><th>Product</th><th>Qty</th><th>Total</th><th>Type</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="ordersBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="section-title" style="margin-top:32px">Products (Inventory)</div>
+    <div class="card">
+        <div class="card-head">
+            <h3>EV Catalogue</h3>
+            <button class="btn btn-primary btn-sm" onclick="Adm.addProduct()"><i class="fas fa-plus"></i> Add Product</button>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>MRP</th><th>Stock</th><th>Actions</th></tr></thead>
+                <tbody id="productsBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- DRIVERS -->
+    <div class="section-title" style="margin-top:32px">Drivers</div>
+    <div class="card">
+        <div class="card-head">
+            <h3>Fleet Partners</h3>
+            <button class="btn btn-primary btn-sm" onclick="Adm.addDriver()"><i class="fas fa-plus"></i> Add Driver</button>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Driver</th><th>Vehicle</th><th>Area</th><th>Trips</th><th>Earnings</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="driversBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="section-title" style="margin-top:32px">Settings</div>
+    <div class="card">
+        <div class="card-head"><h3>App Configuration</h3></div>
+        <div class="card-body">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px">
+                <div class="form-group">
+                    <label>Commission (%)</label>
+                    <input type="number" class="form-control" id="cfgComm" onchange="Adm.saveCfg()">
+                </div>
+                <div class="form-group">
+                    <label>Surge Multiplier</label>
+                    <input type="number" step="0.1" class="form-control" id="cfgSurge" onchange="Adm.saveCfg()">
+                </div>
+                <div class="form-group">
+                    <label>Cancellation Fee (₹)</label>
+                    <input type="number" class="form-control" id="cfgCancel" onchange="Adm.saveCfg()">
+                </div>
+                <div class="form-group">
+                    <label>Razorpay Key ID</label>
+                    <input class="form-control" id="cfgRzp" placeholder="rzp_test_xxxxxxxxxxxx" onchange="Adm.saveCfg()">
+                </div>
+            </div>
+            <div style="font-size:12px;color:var(--muted);margin-top:10px">
+                <i class="fas fa-circle-info"></i> Razorpay key <a href="https://dashboard.razorpay.com/app/keys" target="_blank" style="color:var(--info)">dashboard.razorpay.com</a> se milti hai.
+                Test key <code>rzp_test_...</code> se testing kar sakte hain. Key na hone tak Cash/UPI simulation chalega.
+            </div>
+        </div>
+    </div>
+</main>
+
+<div id="modalHost"></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/firebase.js"></script>
+<script src="assets/admin.js"></script>
+<script src="assets/auth.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+        navigator.serviceWorker.register('service-worker.js').catch(function (e) { console.warn('SW', e); });
+    });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apna Electric One — Book Electric Rides</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#10b981">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Apna Electric">
+<meta name="description" content="Book electric rides aur kharide EV scooters, bikes, rickshaw aur accessories.">
+</head>
+<body>
+
+<nav class="nav">
+    <div class="nav-inner">
+        <a class="brand" href="index.html">
+            <i class="fas fa-bolt"></i>
+            <div>Apna Electric One<small>Ride Electric</small></div>
+        </a>
+        <div class="nav-links">
+            <a href="shop.html"><i class="fas fa-cart-shopping"></i> Shop EV</a>
+            <a href="index.html" class="active">Book Ride</a>
+            <a href="#myrides">My Rides</a>
+            <a href="#how">How it Works</a>
+            <a href="driver.html">Driver Login</a>
+            <a href="admin.html">Admin</a>
+            <a href="settings.html">Settings</a>
+            <a href="#book" class="nav-cta"><i class="fas fa-bolt"></i> Book Now</a>
+        </div>
+    </div>
+</nav>
+
+<header class="hero">
+    <div class="hero-inner">
+        <h1>Book your <span>electric ride</span> in seconds</h1>
+        <p>E-Bike, E-Auto, E-Rickshaw aur E-Cab — Amethi mein sabse sasta aur eco-friendly safar.</p>
+        <div class="hero-stats">
+            <div><div class="n">4</div><div class="l">Vehicle Types</div></div>
+            <div><div class="n">8</div><div class="l">Active Drivers</div></div>
+            <div><div class="n">₹15</div><div class="l">Starting Fare</div></div>
+            <div><div class="n">100%</div><div class="l">Electric Fleet</div></div>
+        </div>
+    </div>
+</header>
+
+<main class="wrap pull-up">
+
+    <!-- BOOKING -->
+    <section id="book">
+        <div class="card">
+            <div class="card-head">
+                <h3><i class="fas fa-location-dot" style="color:var(--brand)"></i> Book a Ride</h3>
+                <span class="badge green" id="onlineBadge">—</span>
+            </div>
+            <div class="card-body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px" id="locGrid">
+                    <div class="form-group">
+                        <label>Pickup Location</label>
+                        <select class="form-control" id="pickup"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Drop Location</label>
+                        <select class="form-control" id="drop"></select>
+                    </div>
+                </div>
+
+                <label style="font-size:12.5px;font-weight:600;color:#475569;display:block;margin-bottom:8px">Choose Vehicle</label>
+                <div class="veh-grid" id="vehGrid"></div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px" id="payGrid">
+                    <div class="form-group">
+                        <label>Payment Method</label>
+                        <select class="form-control" id="payment">
+                            <option value="Cash">Cash</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Razorpay">Pay Online (UPI / Card)</option>
+                            <option value="Wallet">Wallet</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Your Phone</label>
+                        <input type="tel" class="form-control" id="phone" placeholder="10 digit mobile" maxlength="10">
+                    </div>
+                </div>
+
+                <div id="fareBox" style="background:var(--bg);border-radius:12px;padding:16px;margin:6px 0 16px;display:none">
+                    <div style="display:flex;justify-content:space-between;font-size:13px;color:#475569;padding:3px 0"><span>Distance</span><span id="fKm">—</span></div>
+                    <div style="display:flex;justify-content:space-between;font-size:13px;color:#475569;padding:3px 0"><span>Est. Time</span><span id="fMin">—</span></div>
+                    <div style="display:flex;justify-content:space-between;font-size:13px;color:#475569;padding:3px 0"><span>Base Fare</span><span id="fBase">—</span></div>
+                    <div style="display:flex;justify-content:space-between;font-size:19px;font-weight:800;border-top:1px dashed var(--border);margin-top:8px;padding-top:10px"><span>Total Fare</span><span id="fTotal" style="color:var(--brand-dark)">—</span></div>
+                </div>
+
+                <button class="btn btn-primary btn-block" id="bookBtn" onclick="App.book()">
+                    <i class="fas fa-bolt"></i> Book Ride
+                </button>
+                <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:10px">
+                    Demo app — booking turant driver panel aur admin CRM mein dikhegi
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ACTIVE RIDE -->
+    <section class="section" id="activeRide" style="display:none">
+        <div class="card">
+            <div class="card-head">
+                <h3><i class="fas fa-satellite-dish" style="color:var(--brand)"></i> Your Ride</h3>
+                <span class="badge green" id="arStatus">—</span>
+            </div>
+            <div class="card-body" id="arBody"></div>
+        </div>
+    </section>
+
+    <!-- MY RIDES -->
+    <section class="section" id="myrides">
+        <h2 class="section-title">My Rides</h2>
+        <p class="section-sub">Aapki saari bookings</p>
+        <div class="card">
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Ride</th><th>Route</th><th>Vehicle</th><th>Fare</th><th>Status</th></tr></thead>
+                    <tbody id="myRidesBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section" id="how">
+        <h2 class="section-title">How it Works</h2>
+        <p class="section-sub">Sirf 4 step mein ride</p>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon green"><i class="fas fa-location-dot"></i></div><div><div class="stat-value" style="font-size:16px">1. Location</div><div class="stat-label">Pickup aur drop chuno</div></div></div>
+            <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-motorcycle"></i></div><div><div class="stat-value" style="font-size:16px">2. Vehicle</div><div class="stat-label">Bike, Auto, Cab chuno</div></div></div>
+            <div class="stat-card"><div class="stat-icon orange"><i class="fas fa-indian-rupee-sign"></i></div><div><div class="stat-value" style="font-size:16px">3. Fare</div><div class="stat-label">Turant fare dekho</div></div></div>
+            <div class="stat-card"><div class="stat-icon purple"><i class="fas fa-bolt"></i></div><div><div class="stat-value" style="font-size:16px">4. Book</div><div class="stat-label">Driver assign ho jayega</div></div></div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="footer-inner">
+        <div>
+            <h4>Apna Electric One</h4>
+            <a href="#">About Us</a>
+            <a href="#">Careers</a>
+            <a href="#">Blog</a>
+        </div>
+        <div>
+            <h4>Services</h4>
+            <a href="#book">Book a Ride</a>
+            <a href="#myrides">My Rides</a>
+            <a href="driver.html">Driver Partner</a>
+        </div>
+        <div>
+            <h4>Support</h4>
+            <a href="#">Help Center</a>
+            <a href="#">Safety</a>
+            <a href="#">Terms</a>
+        </div>
+        <div>
+            <h4>Contact</h4>
+            <a href="#"><i class="fas fa-envelope"></i> support@apnaelectricone.com</a>
+            <a href="#"><i class="fas fa-phone"></i> 1800-123-4567</a>
+            <a href="#"><i class="fas fa-location-dot"></i> Amethi, Uttar Pradesh</a>
+        </div>
+    </div>
+    <div class="footer-bottom">© 2026 Apna Electric One. All rights reserved. | Made with ❤️ in India</div>
+</footer>
+
+<div id="modalHost"></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/firebase.js"></script>
+<script src="assets/payment.js"></script>
+<script src="assets/customer.js"></script>
+<script src="assets/auth.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+        navigator.serviceWorker.register('service-worker.js').catch(function (e) { console.warn('SW', e); });
+    });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+rules_version = '2';
+
+// Apna Electric One — Firestore Rules
+// DEMO: public read/write (kyunki customer/driver bina login bhi use karte hain)
+// Production mein ise lock karna zaroori hai.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /rides/{rideId} {
+      allow read, write: if true;
+    }
+
+    match /orders/{orderId} {
+      allow read, write: if true;
+    }
+
+    match /drivers/{driverId} {
+      allow read, write: if true;
+    }
+
+    match /products/{productId} {
+      allow read, write: if true;
+    }
+
+    match /config/{docId} {
+      allow read, write: if true;
+    }
+
+    // User accounts (custom auth — password SHA-256 hashed hai)
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

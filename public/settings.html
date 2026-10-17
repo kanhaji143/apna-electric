@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings · Apna Electric One</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="favicon.png">
+<meta name="theme-color" content="#10b981">
+</head>
+<body data-page="settings">
+
+<nav class="nav">
+    <div class="nav-inner">
+        <a class="brand" href="index.html">
+            <i class="fas fa-bolt"></i>
+            <div>Apna Electric One<small>Settings</small></div>
+        </a>
+        <div class="nav-links">
+            <a href="shop.html"><i class="fas fa-cart-shopping"></i> Shop EV</a>
+            <a href="index.html">Book Ride</a>
+            <a href="driver.html">Driver</a>
+            <a href="admin.html">Admin</a>
+            <a href="settings.html" class="active">Settings</a>
+        </div>
+    </div>
+</nav>
+
+<main class="wrap" style="padding-top:26px;padding-bottom:50px">
+    <div class="page-head" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:18px">
+        <div>
+            <h2 style="font-size:21px;font-weight:700">Settings</h2>
+            <p style="font-size:13px;color:var(--muted);margin-top:2px">App details, WhatsApp alert aur payment config</p>
+        </div>
+        <button class="btn btn-primary" onclick="Adm.saveSettings()"><i class="fas fa-floppy-disk"></i> Save Settings</button>
+    </div>
+
+    <div class="card" style="margin-bottom:18px">
+        <div class="card-head"><h3><i class="fas fa-bolt" style="color:var(--brand)"></i> App Details</h3></div>
+        <div class="card-body">
+            <div class="form-row">
+                <div class="form-group"><label>App Name</label><input class="form-control" id="setName" placeholder="Apna Electric One"></div>
+                <div class="form-group"><label>Phone</label><input class="form-control" id="setPhone" placeholder="1800-123-4567"></div>
+            </div>
+            <div class="form-group"><label>Address</label><input class="form-control" id="setAddr" placeholder="Amethi, Uttar Pradesh"></div>
+        </div>
+    </div>
+
+    <div class="card" style="margin-bottom:18px">
+        <div class="card-head"><h3><i class="fab fa-whatsapp" style="color:#25D366"></i> WhatsApp Alerts</h3></div>
+        <div class="card-body">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>WhatsApp Number (country code ke saath)</label>
+                    <input class="form-control" id="setWa" placeholder="919876543210">
+                    <div style="font-size:11.5px;color:var(--muted);margin-top:5px">
+                        <i class="fas fa-circle-info"></i> India ke liye <code>91</code> + 10 digit
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Low Stock Alert Level (pcs)</label>
+                    <input type="number" class="form-control" id="setLow" placeholder="5">
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button class="btn btn-success" onclick="Adm.testLowStock()" style="background:#25D366;border-color:#25D366">
+                    <i class="fab fa-whatsapp"></i> Test — Low Stock Alert
+                </button>
+                <button class="btn btn-success" onclick="Adm.testPending()" style="background:#25D366;border-color:#25D366">
+                    <i class="fab fa-whatsapp"></i> Test — Pending Orders
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" style="margin-bottom:18px">
+        <div class="card-head"><h3><i class="fas fa-percent" style="color:var(--info)"></i> Business Settings</h3></div>
+        <div class="card-body">
+            <div class="form-row">
+                <div class="form-group"><label>Commission (%)</label><input type="number" class="form-control" id="setComm"></div>
+                <div class="form-group"><label>Surge Multiplier</label><input type="number" step="0.1" class="form-control" id="setSurge"></div>
+                <div class="form-group"><label>Cancellation Fee (₹)</label><input type="number" class="form-control" id="setCancel"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" style="margin-bottom:18px">
+        <div class="card-head"><h3><i class="fas fa-credit-card" style="color:var(--brand)"></i> Payment (Razorpay)</h3></div>
+        <div class="card-body">
+            <div class="form-group">
+                <label>Razorpay Key ID</label>
+                <input class="form-control" id="setRzp" placeholder="rzp_test_xxxxxxxxxxxx">
+                <div style="font-size:11.5px;color:var(--muted);margin-top:5px">
+                    <i class="fas fa-circle-info"></i> Key <a href="https://dashboard.razorpay.com/app/keys" target="_blank" style="color:var(--info)">dashboard.razorpay.com</a> se milegi. Key na hone tak Cash/UPI simulation chalega.
+                </div>
+            </div>
+            <div id="rzpStatus" style="font-size:13px"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-head"><h3><i class="fas fa-database" style="color:var(--info)"></i> Cloud Sync (Firestore)</h3></div>
+        <div class="card-body" id="syncBox"></div>
+    </div>
+</main>
+
+<div id="modalHost"></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/firebase.js"></script>
+<script src="assets/payment.js"></script>
+<script src="assets/admin.js"></script>
+<script src="assets/auth.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+        navigator.serviceWorker.register('service-worker.js').catch(function () {});
+    });
+}
+</script>
+</body>
+</html>

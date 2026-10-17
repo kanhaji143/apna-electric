@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EV Showroom — Apna Electric One</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/app.css">
+<style>
+.prod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 18px; }
+.prod {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; box-shadow: var(--shadow); transition: all .2s; position: relative; cursor: pointer;
+}
+.prod:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+.prod-img {
+    height: 170px; display: flex; align-items: center; justify-content: center;
+    font-size: 62px; background: linear-gradient(135deg, #f8fafc, #eef2f7);
+}
+.prod-badge { position: absolute; top: 12px; left: 12px; z-index: 2; }
+.prod-body { padding: 14px; }
+.prod-name { font-size: 14.5px; font-weight: 700; line-height: 1.35; height: 40px; overflow: hidden; margin-bottom: 6px; }
+.prod-spec { font-size: 11.5px; color: var(--muted); margin-bottom: 8px; }
+.prod-price { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+.prod-price .now { font-size: 19px; font-weight: 800; }
+.prod-price .mrp { font-size: 13px; color: var(--muted); text-decoration: line-through; }
+.prod-price .off { font-size: 12.5px; font-weight: 700; color: var(--brand-dark); }
+.prod-emi { font-size: 11.5px; color: var(--info); font-weight: 600; margin-bottom: 10px; }
+.cat-bar { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 14px; }
+.cat-bar::-webkit-scrollbar { display: none; }
+.cat-chip {
+    border: 1.5px solid var(--border); background: #fff; border-radius: 22px;
+    padding: 9px 16px; font-size: 13px; font-weight: 600; cursor: pointer;
+    white-space: nowrap; transition: all .15s; display: flex; align-items: center; gap: 7px; color: #475569;
+}
+.cat-chip:hover { border-color: var(--brand); }
+.cat-chip.sel { background: var(--dark); color: #fff; border-color: var(--dark); }
+.spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+.spec-item { background: var(--bg); border-radius: 10px; padding: 10px 12px; }
+.spec-item .k { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; font-weight: 700; }
+.spec-item .v { font-size: 14px; font-weight: 700; }
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#10b981">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Apna Electric">
+</head>
+<body>
+
+<nav class="nav">
+    <div class="nav-inner">
+        <a class="brand" href="index.html">
+            <i class="fas fa-bolt"></i>
+            <div>Apna Electric One<small>Ride · Shop</small></div>
+        </a>
+        <div class="nav-links">
+            <a href="shop.html" class="active"><i class="fas fa-cart-shopping"></i> Shop EV</a>
+            <a href="index.html">Book Ride</a>
+            <a href="index.html#myrides">My Rides</a>
+            <a href="driver.html">Driver</a>
+            <a href="admin.html">Admin</a>
+            <a href="settings.html">Settings</a>
+            <a href="#products" class="nav-cta"><i class="fas fa-cart-shopping"></i> Buy Now</a>
+        </div>
+    </div>
+</nav>
+
+<header class="hero" style="padding:52px 20px 78px">
+    <div class="hero-inner">
+        <h1>Apna <span>EV Showroom</span> — Buy Electric</h1>
+        <p>E-Scooter, E-Bike, E-Rickshaw aur accessories — best price, easy EMI, home delivery.</p>
+        <div class="hero-stats">
+            <div><div class="n">10+</div><div class="l">Products</div></div>
+            <div><div class="n">₹44,999</div><div class="l">Starting Price</div></div>
+            <div><div class="n">0%</div><div class="l">Down Payment</div></div>
+            <div><div class="n">2 Yr</div><div class="l">Battery Warranty</div></div>
+        </div>
+    </div>
+</header>
+
+<main class="wrap pull-up">
+
+    <section id="products">
+        <div class="card" style="margin-bottom:20px">
+            <div class="card-body" style="padding-bottom:8px">
+                <div class="cat-bar" id="catBar"></div>
+            </div>
+        </div>
+
+        <div class="prod-grid" id="prodGrid"></div>
+    </section>
+
+    <section class="section" id="myorders">
+        <h2 class="section-title">My Orders</h2>
+        <p class="section-sub">Aapke saare orders aur test ride bookings</p>
+        <div class="card">
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Order</th><th>Product</th><th>Qty</th><th>Total</th><th>Type</th><th>Status</th></tr></thead>
+                    <tbody id="ordersBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="footer-inner">
+        <div><h4>Apna Electric One</h4><a href="#">About Us</a><a href="#">Careers</a><a href="#">Blog</a></div>
+        <div><h4>Shop</h4><a href="#products">E-Scooters</a><a href="#products">E-Bikes</a><a href="#products">Accessories</a></div>
+        <div><h4>Rides</h4><a href="index.html">Book a Ride</a><a href="driver.html">Driver Partner</a></div>
+        <div><h4>Contact</h4><a href="#"><i class="fas fa-envelope"></i> sales@apnaelectricone.com</a><a href="#"><i class="fas fa-phone"></i> 1800-123-4567</a><a href="#"><i class="fas fa-location-dot"></i> Amethi, Uttar Pradesh</a></div>
+    </div>
+    <div class="footer-bottom">© 2026 Apna Electric One. All rights reserved. | Made with ❤️ in India</div>
+</footer>
+
+<div id="modalHost"></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/firebase.js"></script>
+<script src="assets/payment.js"></script>
+<script src="assets/shop.js"></script>
+<script src="assets/auth.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+        navigator.serviceWorker.register('service-worker.js').catch(function (e) { console.warn('SW', e); });
+    });
+}
+</script>
+</body>
+</html>
